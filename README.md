@@ -32,9 +32,7 @@ Utlize the docker-compose.yml provided
 $ docker-compose up
 ```
 
-
 ## Docker + Docker Compose
-
 The project includes a basic `docker-compose.yml` for development.  To run, execute the following:
 
 ```
@@ -52,6 +50,9 @@ $ docker build -t adolfintel/speedtest:latest .
 
 $ docker run -d --name  speedtest -p 0.0.0.0:80:80 adolfintel/speedtest:latest
 ```
+
+## Android app
+A template to build an Android client for your HTML5 Speedtest installation is available [here](https://github.com/adolfintel/speedtest-android).
 
 ## Donate
 [![Donate with Liberapay](https://liberapay.com/assets/widgets/donate.svg)](https://liberapay.com/fdossena/donate)  
