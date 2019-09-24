@@ -1,10 +1,9 @@
 # HTML5 Speedtest
 
-This is a s nodeJS Port from [adolfintel's HTML5 Speedtest](https://github.com/adolfintel/speedtest)
+This is a nodeJS Port from [adolfintel's HTML5 Speedtest](https://github.com/adolfintel/speedtest)
 
 ## Installation
 For any instructions and support please check out the [Wiki](https://github.com/adolfintel/speedtest/wiki)
-
 
 ## Support
 If you like this project and want to support our work you can either do pull requests or donate via [PayPal](https://paypal.me/dunklesToast) 
