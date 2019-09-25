@@ -1,6 +1,6 @@
-![HTML5 Speedtest Logo](https://github.com/librespeed/speedtest/blob/master/.logo/logo3.png?raw=true)
+![LibreSpeed Logo](https://github.com/librespeed/speedtest/blob/master/.logo/logo3.png?raw=true)
 
-# HTML5 Speedtest
+# LibreSpeed
 
 No Flash, No Java, No Websocket, No Bullshit.
 
@@ -52,7 +52,7 @@ $ docker run -d --name  speedtest -p 0.0.0.0:80:80 adolfintel/speedtest:latest
 ```
 
 ## Android app
-A template to build an Android client for your HTML5 Speedtest installation is available [here](https://github.com/adolfintel/speedtest-android).
+A template to build an Android client for your LibreSpeed installation is available [here](https://github.com/librespeed/speedtest-android).
 
 ## Donate
 [![Donate with Liberapay](https://liberapay.com/assets/widgets/donate.svg)](https://liberapay.com/fdossena/donate)  
