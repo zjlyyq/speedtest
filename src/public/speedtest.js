@@ -1,5 +1,5 @@
 /*
-	HTML5 Speedtest - Main
+	LibreSpeed - Main
 	by Federico Dossena
 	https://github.com/librespeed/speedtest/
 	GNU LGPLv3 License
