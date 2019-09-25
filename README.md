@@ -1,4 +1,4 @@
-![HTML5 Speedtest Logo](https://github.com/adolfintel/speedtest/blob/master/.logo/Readme-Logo.png?raw=true)
+![HTML5 Speedtest Logo](https://github.com/librespeed/speedtest/blob/master/.logo/logo3.png?raw=true)
 
 # HTML5 Speedtest
 
@@ -7,7 +7,7 @@ No Flash, No Java, No Websocket, No Bullshit.
 This is a very lightweight Speedtest implemented in Javascript, using XMLHttpRequest and Web Workers.
 
 ## Try it
-[Take a Speedtest](http://speedtest.fdossena.com)
+[Take a Speedtest](https://speedtest.fdossena.com)
 
 ## Compatibility
 All modern browsers are supported: IE11, latest Edge, latest Chrome, latest Firefox, latest Safari.  
