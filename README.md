@@ -8,8 +8,6 @@ For any instructions and support please check out the [Wiki](https://github.com/
 If you like this project and want to support our work you can either do pull requests or donate via [PayPal](https://paypal.me/dunklesToast) 
 
 ## License
-Copyright (C) 2016-2019 Federico Dossena
-
 Copyright (C) 2019 dunklesToast
 
 
