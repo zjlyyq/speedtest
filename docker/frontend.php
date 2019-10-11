@@ -1,14 +1,45 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="shortcut icon" href="favicon.ico">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no" />
 <meta charset="UTF-8" />
-<link rel="shortcut icon" href="favicon.ico">
 <script type="text/javascript" src="speedtest.js"></script>
 <script type="text/javascript">
 function I(i){return document.getElementById(i);}
+
+//LIST OF TEST SERVERS. See documentation for details if needed
+var SPEEDTEST_SERVERS= <?= file_get_contents('/servers.json') ?: '[]' ?>;
+
 //INITIALIZE SPEEDTEST
 var s=new Speedtest(); //create speedtest object
+<?php if(getenv("TELEMETRY")=="true"){ ?>
+s.setParameter("telemetry_level","basic");
+<?php } ?>
+s.addTestPoints(SPEEDTEST_SERVERS); //add list of servers
+
+//SERVER AUTO SELECTION
+function initServers(){
+	s.selectServer(function(server){
+		if(server!=null){ //at least 1 server is available
+			I("loading").className="hidden"; //hide loading message
+			//populate server list for manual selection
+			for(var i=0;i<SPEEDTEST_SERVERS.length;i++){
+				if(SPEEDTEST_SERVERS[i].pingT==-1) continue;
+				var option=document.createElement("option");
+				option.value=i;
+				option.textContent=SPEEDTEST_SERVERS[i].name;
+				if(SPEEDTEST_SERVERS[i]===server) option.selected=true;
+				I("server").appendChild(option);
+			}
+			//show test UI
+			I("testWrapper").className="visible";
+			initUI();
+		}else{ //no servers are available, the test cannot proceed
+			I("message").innerHTML="No servers available";
+		}
+	});
+}
 
 var meterBk=/Trident.*rv:(\d+\.\d+)/i.test(navigator.userAgent)?"#EAEAEA":"#80808040";
 var dlColor="#6060AA",
@@ -60,16 +91,33 @@ function startStop(){
 		s.abort();
 		data=null;
 		I("startStopBtn").className="";
+		I("server").disabled=false;
 		initUI();
 	}else{
 		//test is not running, begin
 		I("startStopBtn").className="running";
+		I("shareArea").style.display="none";
+		I("server").disabled=true;
 		s.onupdate=function(data){
             uiData=data;
 		};
 		s.onend=function(aborted){
             I("startStopBtn").className="";
+            I("server").disabled=false;
             updateUI(true);
+            if(!aborted){
+                //if testId is present, show sharing panel, otherwise do nothing
+                try{
+                    var testId=uiData.testId;
+                    if(testId!=null){
+                        var shareURL=window.location.href.substring(0,window.location.href.lastIndexOf("/"))+"/results/?id="+testId;
+                        I("resultsImg").src=shareURL;
+                        I("resultsURL").value=shareURL;
+                        I("testId").innerHTML=testId;
+                        I("shareArea").style.display="";
+                    }
+                }catch(e){}
+            }
 		};
 		s.start();
 	}
@@ -121,6 +169,25 @@ function initUI(){
 	h1{
 		color:#404040;
 	}
+	#loading{
+		background-color:#FFFFFF;
+		color:#404040;
+		text-align:center;
+	}
+	span.loadCircle{
+		display:inline-block;
+		width:2em;
+		height:2em;
+		vertical-align:middle;
+		background:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAP1BMVEUAAAB2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZyFzwnAAAAFHRSTlMAEvRFvX406baecwbf0casimhSHyiwmqgAAADpSURBVHja7dbJbQMxAENRahnN5lkc//5rDRAkDeRgHszXgACJoKiIiIiIiIiIiIiIiIiIiIj4HHspsrpAVhdVVguzrA4OWc10WcEqpwKbnBo0OU1Q5NSpsoJFTgOecrrdEag85DRgktNqfoEdTjnd7hrEHMEJvmRUYJbTYk5Agy6nau6Abp5Cm7mDBtRdPi9gyKdU7w4p1fsLvyqs8hl4z9/w3n/Hmr9WoQ65lAU4d7lMYOz//QboRR5jBZibLMZdAR6O/Vfa1PlxNr3XdS3HzK/HVPRu/KnLs8iAOh993VpRRERERMT/fAN60wwWaVyWwAAAAABJRU5ErkJggg==');
+		background-size:2em 2em;
+		margin-right:0.5em;
+		animation: spin 0.6s linear infinite;
+	}
+	@keyframes spin{
+		0%{transform:rotate(0deg);}
+		100%{transform:rotate(359deg);}
+	}
 	#startStopBtn{
 		display:inline-block;
 		margin:0 auto;
@@ -148,6 +215,13 @@ function initUI(){
 	}
 	#startStopBtn.running:before{
 		content:"Abort";
+	}
+	#serverArea{
+		margin-top:1em;
+	}
+	#server{
+		font-size:1em;
+		padding:0.2em;
 	}
 	#test{
 		margin-top:2em;
@@ -212,21 +286,89 @@ function initUI(){
 		display:block;
         margin: 0 auto;
 	}
+	#shareArea{
+		width:95%;
+		max-width:40em;
+		margin:0 auto;
+		margin-top:2em;
+	}
+	#shareArea > *{
+		display:block;
+		width:100%;
+		height:auto;
+		margin: 0.25em 0;
+	}
+	#privacyPolicy{
+        position:fixed;
+        top:2em;
+        bottom:2em;
+        left:2em;
+        right:2em;
+        overflow-y:auto;
+        width:auto;
+        height:auto;
+        box-shadow:0 0 3em 1em #000000;
+        z-index:999999;
+        text-align:left;
+        background-color:#FFFFFF;
+        padding:1em;
+	}
+	a.privacy{
+        text-align:center;
+        font-size:0.8em;
+        color:#808080;
+        display:block;
+	}
 	@media all and (max-width:40em){
 		body{
 			font-size:0.8em;
 		}
 	}
+	div.visible{
+		animation: fadeIn 0.4s;
+		display:block;
+	}
+	div.hidden{
+		animation: fadeOut 0.4s;
+		display:none;
+	}
+	@keyframes fadeIn{
+		0%{
+			opacity:0;
+		}
+		100%{
+			opacity:1;
+		}
+	}
+	@keyframes fadeOut{
+		0%{
+			display:block;
+			opacity:1;
+		}
+		100%{
+			display:block;
+			opacity:0;
+		}
+	}
 </style>
-<title>LibreSpeed Example</title>
+<title><?= getenv('TITLE') ?: 'LibreSpeed Example' ?></title>
 </head>
-<body>
-<h1>LibreSpeed Example</h1>
-<div id="testWrapper">
+<body onload="initServers()">
+<h1><?= getenv('TITLE') ?: 'LibreSpeed Example' ?></h1>
+<div id="loading" class="visible">
+	<p id="message"><span class="loadCircle"></span>Selecting a server...</p>
+</div>
+<div id="testWrapper" class="hidden">
 	<div id="startStopBtn" onclick="startStop()"></div>
+	<?php if(getenv("TELEMETRY")=="true"){ ?>
+        <a class="privacy" href="#" onclick="I('privacyPolicy').style.display=''">Privacy</a>
+	<?php } ?>
+	<div id="serverArea">
+		Server: <select id="server" onchange="s.setSelectedServer(SPEEDTEST_SERVERS[this.value])"></select>
+	</div>
 	<div id="test">
-        <div class="testGroup">
-			<div class="testArea2">
+		<div class="testGroup">
+            <div class="testArea2">
 				<div class="testName">Ping</div>
 				<div id="pingText" class="meterText" style="color:#AA6060"></div>
 				<div class="unit">ms</div>
@@ -254,9 +396,52 @@ function initUI(){
 		<div id="ipArea">
 			<span id="ip"></span>
 		</div>
+		<div id="shareArea" style="display:none">
+			<h3>Share results</h3>
+			<p>Test ID: <span id="testId"></span></p>
+			<input type="text" value="" id="resultsURL" readonly="readonly" onclick="this.select();this.focus();this.select();document.execCommand('copy');alert('Link copied')"/>
+			<img src="" id="resultsImg" />
+		</div>
 	</div>
 	<a href="https://github.com/librespeed/speedtest">Source code</a>
 </div>
-<script type="text/javascript">setTimeout(function(){initUI()},100);</script>
+<div id="privacyPolicy" style="display:none">
+    <h2>Privacy Policy</h2>
+    <p>This HTML5 Speedtest server is configured with telemetry enabled.</p>
+    <h4>What data we collect</h4>
+    <p>
+        At the end of the test, the following data is collected and stored:
+        <ul>
+            <li>Test ID</li>
+            <li>Time of testing</li>
+            <li>Test results (download and upload speed, ping and jitter)</li>
+            <li>IP address</li>
+            <li>ISP information</li>
+            <li>Approximate location (inferred from IP address, not GPS)</li>
+            <li>User agent and browser locale</li>
+            <li>Test log (contains no personal information)</li>
+        </ul>
+    </p>
+    <h4>How we use the data</h4>
+    <p>
+        Data collected through this service is used to:
+        <ul>
+            <li>Allow sharing of test results (sharable image for forums, etc.)</li>
+            <li>To improve the service offered to you (for instance, to detect problems on our side)</li>
+        </ul>
+        No personal information is disclosed to third parties.
+    </p>
+    <h4>Your consent</h4>
+    <p>
+        By starting the test, you consent to the terms of this privacy policy.
+    </p>
+    <h4>Data removal</h4>
+    <p>
+        If you want to have your information deleted, you need to provide either the ID of the test or your IP address. This is the only way to identify your data, without this information we won't be able to comply with your request.<br/><br/>
+        Contact this email address for all deletion requests: <a href="mailto:<?=getenv("EMAIL") ?>"><?=getenv("EMAIL") ?></a>.
+    </p>
+    <br/><br/>
+    <a class="privacy" href="#" onclick="I('privacyPolicy').style.display='none'">Close</a><br/>
+</div>
 </body>
 </html>
