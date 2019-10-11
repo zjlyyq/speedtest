@@ -7,7 +7,7 @@ To download LibreSpeed from the docker hub, use this command:
 docker pull adolfintel/speedtest
 ```
 
-You will now have a new docker image called `speedtest`.
+You will now have a new docker image called `adolfintel/speedtest`.
 
 ## Standalone mode
 If you want to install LibreSpeed on a single server, you need to configure it in standalone mode. To do this, set the `MODE` environment variable to `standalone`.
@@ -29,13 +29,13 @@ If telemetry is enabled, a stats page will be available at `http://your.server/r
 This command starts LibreSpeed in standalone mode, with the default settings, on port 80:
 
 ```
-docker run -e MODE=standalone -p 80:80 -it speedtest
+docker run -e MODE=standalone -p 80:80 -it adolfintel/speedtest
 ```
 
 This command starts LibreSpeed in standalone mode, with telemetry, ID obfuscation and a stats password, on port 80:
 
 ```
-docker run -e MODE=standalone -e TELEMETRY=true -e ENABLE_ID_OBFUSCATION=true -e PASSWORD="botnet!123" -p 80:80 -it speedtest
+docker run -e MODE=standalone -e TELEMETRY=true -e ENABLE_ID_OBFUSCATION=true -e PASSWORD="botnet!123" -p 80:80 -it adolfintel/speedtest
 ```
 
 ## Multiple Points of Test
@@ -52,7 +52,7 @@ Here's a list of additional environment variables available in this mode:
 ###### Example:
 This command starts LibreSpeed in backend mode, with the default settings, on port 80:
 ```
-docker run -e MODE=backend -p 80:80 -it speedtest
+docker run -e MODE=backend -p 80:80 -it adolfintel/speedtest
 ```
 
 ### Frontend mode
@@ -96,6 +96,6 @@ Here's a list of additional environment variables available in this mode:
 ###### Example
 This command starts LibreSpeed in frontend mode, with a given `servers.json` file, and with telemetry, ID obfuscation, and a stats password:
 ```
-docker run -e MODE=frontend -e TELEMETRY=true -e ENABLE_ID_OBFUSCATION=true -e PASSWORD="botnet!123" -v ./my_servers.json:/servers.json -p 80:80 -it speedtest
+docker run -e MODE=frontend -e TELEMETRY=true -e ENABLE_ID_OBFUSCATION=true -e PASSWORD="botnet!123" -v ./my_servers.json:/servers.json -p 80:80 -it adolfintel/speedtest
 ```
 
