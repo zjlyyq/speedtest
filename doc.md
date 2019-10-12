@@ -38,6 +38,20 @@ This command starts LibreSpeed in standalone mode, with telemetry, ID obfuscatio
 docker run -e MODE=standalone -e TELEMETRY=true -e ENABLE_ID_OBFUSCATION=true -e PASSWORD="botnet!123" -p 80:80 -it adolfintel/speedtest
 ```
 
+### Multiple Points of Test
+If you want to use more than one test server, this is the time to add all your test points and select the best one. Skip this part if you don't want to use this feature.
+
+The best way to do this is to declare an array with all your servers, and give it to the speedtest:
+```js
+var SPEEDTEST_SERVERS=[
+	server1,
+	server2,
+	...
+];
+s.addTestPoints(SPEEDTEST_SERVERS);
+>>>>>>> master
+```
+
 ## Multiple Points of Test
 For multiple servers, you need to set up 1+ LibreSpeed backends, and 1 LibreSpeed frontend.
 
