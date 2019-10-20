@@ -16,6 +16,12 @@ var s=new Speedtest(); //create speedtest object
 <?php if(getenv("TELEMETRY")=="true"){ ?>
 s.setParameter("telemetry_level","basic");
 <?php } ?>
+<?php if(getenv("DISABLE_IPINFO")=="true"){ ?>
+s.setParameter("getIp_ispInfo","false");
+<?php } ?>
+<?php if(getenv("DISTANCE")){ ?>
+s.setParameter("getIp_ispInfo_distance","<?=getenv("DISTANCE") ?>");
+<?php } ?>
 s.addTestPoints(SPEEDTEST_SERVERS); //add list of servers
 
 //SERVER AUTO SELECTION
