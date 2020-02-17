@@ -39,6 +39,119 @@ This command starts LibreSpeed in standalone mode, with telemetry, ID obfuscatio
 ```
 docker run -e MODE=standalone -e TELEMETRY=true -e ENABLE_ID_OBFUSCATION=true -e PASSWORD="botnet!123" -p 80:80 -it adolfintel/speedtest
 ```
+And now the test results will be stored and we will get our test ID at the end of the test (along with the other data)
+
+__Main parameters:__
+* __time_dl_max__: Maximum duration of the download test in seconds. If auto duration is disabled, this is used as the duration of the test.
+    * Default: `15`
+    * Recommended: `>=5`
+* __time_ul_max__: Maximum duration of the upload test in seconds. If auto duration is disabled, this is used as the duration of the test.
+    * Default: `15`
+    * Recommended: `>=10`
+* __time_auto__: Automatically determine the duration of the download and upload tests, making them faster on faster connections, to avoid wasting data.
+    * Default: `true`
+* __count_ping__: How many pings to perform in the ping test
+    * Default: `10`
+    * Recommended: `>=3, <30`
+* __url_dl__: path to garbage.php or a large file to use for the download test.
+    * Default: `garbage.php`
+    * __Important:__ path is relative to js file
+* __url_ul__: path to an empty file or empty.php to use for the upload test
+    * Default: `empty.php`
+    * __Important:__ path is relative to js file
+* __url_ping__: path to an empty file or empty.php to use for the ping test
+    * Default: `empty.php`
+    * __Important:__ path is relative to js file
+* __url_getIp__: path to getIP.php or replacement
+    * Default: `getIP.php`
+    * __Important:__ path is relative to js file
+* __url_telemetry__: path to telemetry.php or replacement
+    * Default: `results/telemetry.php`
+    * __Important:__ path is relative to js file
+	* __Note:__ you can ignore this parameter if you're not using the telemetry
+* __telemetry_level__: The type of telemetry to use. See the telemetry section for more info about this
+	* Default: `none`
+	* `basic`: send results only
+	* `full`: send results and timing information, even for aborted tests
+	* `debug`: same as full but also sends debug information. Not recommended.
+* __test_order__: the order in which tests will be performed. You can use this to change the order of the test, or to only enable specific tests. Each character represents an operation:
+    * `I`: get IP
+    * `D`: download test
+    * `U`: upload test
+    * `P`: ping + jitter test
+    * `_`: delay 1 second
+    * Default test order: `IP_D_U`
+    * __Important:__ Tests can only be run once
+    * __Important:__ On Firefox, it is better to run the upload test last
+* __getIp_ispInfo__: if true, the server will try to get ISP info and pass it along with the IP address. This will add `isp=true` to the request to `url_getIp`. getIP.php accomplishes this using ipinfo.io
+    * Default: `true`
+* __getIp_ispInfo_distance__: if true, the server will try to get an estimate of the distance from the client to the speedtest server. This will add a `distance` argument to the request to `url_getIp`. `__getIp_ispInfo__` must be enabled in order for this to work. getIP.php accomplishes this using ipinfo.io
+    * `km`: estimate distance in kilometers
+    * `mi`: estimate distance in miles
+    * not set: do not measure distance
+    * Default: `km`
+
+__Advanced parameters:__ (Seriously, don't change these unless you know what you're doing)
+* __telemetry_extra__: Extra data that you want to be passed to the telemetry. This is a string field, if you want to pass an object, make sure you use ``JSON.stringify``. This string will be added to the database entry for this test.
+* __enable_quirks__: enables browser-specific optimizations. These optimizations override some of the default settings. They do not override settings that are explicitly set.
+    * Default: `true`
+* __garbagePhp_chunkSize__: size of chunks sent by garbage.php in megabytes
+    * Default: `100`
+    * Recommended: `>=10`
+    * Maximum: `1024`
+* __xhr_dlMultistream__: how many streams should be opened for the download test
+    * Default: `6`
+    * Recommended: `>=3`
+    * Default override: 3 on Edge if enable_quirks is true
+    * Default override: 5 on Chromium-based if enable_quirks is true
+* __xhr_ulMultistream__: how many streams should be opened for the upload test
+    * Default: `3`
+    * Recommended: `>=1`
+* __xhr_ul_blob_megabytes__: size in megabytes of the blobs sent during the upload test
+	* Default: `20`
+	* Default override: 4 on Chromium-based mobile browsers (limitation introduced around version 65). This will be forced
+	* Default override: IE11 and Edge currently use a different method for the upload test. This parameter is ignored
+* __xhr_multistreamDelay__: how long should the multiple streams be delayed (in ms)
+    * Default: `300`
+    * Recommended: `>=100`, `<=700`
+* __xhr_ignoreErrors__: how to react to errors in download/upload streams and the ping test
+    * `0`: Fail test on error (behaviour of previous versions of this test)
+    * `1`: Restart a stream/ping when it fails
+    * `2`: Ignore all errors
+    * Default: `1`
+    * Recommended: `1`
+* __time_dlGraceTime__: How long to wait (in seconds) before actually measuring the download speed. This is a good idea because we want to wait for the TCP window to be at its maximum (or close to it)
+    * Default: `1.5`
+    * Recommended: `>=0`
+* __time_ulGraceTime__: How long to wait (in seconds) before actually measuring the upload speed. This is a good idea because we want to wait for the buffers to be full (avoids the peak at the beginning of the test)
+    * Default: `3`
+    * Recommended: `>=1`
+* __ping_allowPerformanceApi__: toggles use of Performance API to improve accuracy of Ping/Jitter test on browsers that support it.
+	* Default: `true`
+	* Default override: `false` on Firefox because its performance API implementation is inaccurate
+* __useMebibits__: use mebibits/s instead of megabits/s for the speeds
+	* Default: `false`
+* __overheadCompensationFactor__: compensation for HTTP and network overhead. Default value assumes typical MTUs used over the Internet. You might want to change this if you're using this in your internal network with different MTUs, or if you're using IPv6 instead of IPv4.
+    * Default: `1.06` probably a decent estimate for all overhead. This was measured empirically by comparing the measured speed and the speed reported by my the network adapter.
+    * `1048576/925000`: old default value. This is probably too high.
+	* `1.0513`: HTTP+TCP+IPv6+ETH, over the Internet (empirically tested, not calculated)
+    * `1.0369`: Alternative value for HTTP+TCP+IPv4+ETH, over the Internet (empirically tested, not calculated)
+	* `1.081`: Yet another alternative value for over the Internet (empirically tested, not calculated)
+    * `1514 / 1460`: TCP+IPv4+ETH, ignoring HTTP overhead
+    * `1514 / 1440`: TCP+IPv6+ETH, ignoring HTTP overhead
+    * `1`: ignore overheads. This measures the speed at which you actually download and upload files rather than the raw connection speed
+
+### Multiple Points of Test
+If you want to use more than one test server, this is the time to add all your test points and select the best one. Skip this part if you don't want to use this feature.
+
+The best way to do this is to declare an array with all your servers, and give it to the speedtest:
+```js
+var SPEEDTEST_SERVERS=[
+	server1,
+	server2,
+	...
+];
+s.addTestPoints(SPEEDTEST_SERVERS);
 
 ## Multiple Points of Test
 For multiple servers, you need to set up 1+ LibreSpeed backends, and 1 LibreSpeed frontend.
