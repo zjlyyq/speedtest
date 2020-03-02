@@ -166,7 +166,11 @@ func Record(w http.ResponseWriter, r *http.Request) {
 
 	var record schema.TelemetryData
 	record.IPAddress = ipAddr
-	record.ISPInfo = ispInfo
+	if ispInfo == "" {
+		record.ISPInfo = "{}"
+	} else {
+		record.ISPInfo = ispInfo
+	}
 	record.Extra = extra
 	record.UserAgent = userAgent
 	record.Language = language
