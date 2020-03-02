@@ -49,6 +49,7 @@ func ListenAndServe(conf *config.Config) error {
 	r.HandleFunc("/empty", empty)
 	r.Get("/garbage", garbage)
 	r.Get("/getIP", getIP)
+	r.Get("/results", results.DrawPNG)
 	r.Get("/results/", results.DrawPNG)
 	r.Post("/results/telemetry", results.Record)
 	r.HandleFunc("/stats", results.Stats)
