@@ -52,6 +52,14 @@ func ListenAndServe(conf *config.Config) error {
 	r.Get("/results/", results.DrawPNG)
 	r.Post("/results/telemetry", results.Record)
 	r.HandleFunc("/stats", results.Stats)
+
+	// PHP frontend default values compatibility
+	r.HandleFunc("/empty.php", empty)
+	r.Get("/garbage.php", garbage)
+	r.Get("/getIP.php", getIP)
+	r.Post("/results/telemetry.php", results.Record)
+	r.HandleFunc("/stats.php", results.Stats)
+
 	return http.ListenAndServe(net.JoinHostPort(conf.BindAddress, conf.Port), r)
 }
 
