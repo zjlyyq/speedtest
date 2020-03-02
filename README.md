@@ -104,7 +104,7 @@ attempt to fetch your current network's ISP info for distance calculation betwee
 This action will only be taken once, and cached for later use.
 
 ## License
-Copyright (C) 2016-2019 Federico Dossena  
+Copyright (C) 2016-2020 Federico Dossena  
 Copyright (C) 2020 Maddie Zhan
 
 This program is free software: you can redistribute it and/or modify
