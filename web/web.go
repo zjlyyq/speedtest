@@ -154,25 +154,32 @@ func getIP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	rawIspInfo, ispInfo := getIPInfo(clientIP)
-	ret.RawISPInfo = rawIspInfo
+	getISPInfo := r.FormValue("isp") == "true"
+	getDistance := r.FormValue("distance") == "true"
 
-	removeRegexp := regexp.MustCompile(`AS\d+\s`)
-	isp := removeRegexp.ReplaceAllString(ispInfo.Organization, "")
+	ret.ProcessedString = clientIP
 
-	if isp == "" {
-		isp = "Unknown ISP"
+	if getISPInfo {
+		rawIspInfo, ispInfo := getIPInfo(clientIP)
+		ret.RawISPInfo = rawIspInfo
+
+		removeRegexp := regexp.MustCompile(`AS\d+\s`)
+		isp := removeRegexp.ReplaceAllString(ispInfo.Organization, "")
+
+		if isp == "" {
+			isp = "Unknown ISP"
+		}
+
+		if ispInfo.Country != "" {
+			isp += ", " + ispInfo.Country
+		}
+
+		if ispInfo.Location != "" && getDistance {
+			isp += " (" + calculateDistance(ispInfo.Location, config.LoadedConfig().DistanceUnit) + ")"
+		}
+
+		ret.ProcessedString += " - " + isp
 	}
-
-	if ispInfo.Country != "" {
-		isp += ", " + ispInfo.Country
-	}
-
-	if ispInfo.Location != "" {
-		isp += " (" + calculateDistance(ispInfo.Location, config.LoadedConfig().DistanceUnit) + ")"
-	}
-
-	ret.ProcessedString = clientIP + " - " + isp
 
 	render.JSON(w, r, ret)
 }

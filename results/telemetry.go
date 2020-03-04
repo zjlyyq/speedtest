@@ -132,6 +132,7 @@ func init() {
 func (r *Result) GetISPInfo() (IPInfoResponse, error) {
 	var ret IPInfoResponse
 	var err error
+
 	if r.RawISPInfo != "" {
 		err = json.Unmarshal([]byte(r.RawISPInfo), &ret)
 	} else {
