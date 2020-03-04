@@ -179,6 +179,9 @@ func getIP(w http.ResponseWriter, r *http.Request) {
 		}
 
 		ret.ProcessedString += " - " + isp
+	} else {
+		// return an empty JSON object to avoid parse errors
+		ret.RawISPInfo = "{}"
 	}
 
 	render.JSON(w, r, ret)
