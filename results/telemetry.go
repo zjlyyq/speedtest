@@ -58,8 +58,8 @@ var (
 )
 
 type Result struct {
-	ProcessedString string `json:"processedString"`
-	RawISPInfo      string `json:"rawIspInfo"`
+	ProcessedString string         `json:"processedString"`
+	RawISPInfo      IPInfoResponse `json:"rawIspInfo"`
 }
 
 type IPInfoResponse struct {
@@ -127,19 +127,6 @@ func init() {
 		DPI:     dpi,
 		Hinting: font.HintingFull,
 	})
-}
-
-func (r *Result) GetISPInfo() (IPInfoResponse, error) {
-	var ret IPInfoResponse
-	var err error
-
-	if r.RawISPInfo != "" {
-		err = json.Unmarshal([]byte(r.RawISPInfo), &ret)
-	} else {
-		// if ISP info is not available (i.e. localhost testing), use ProcessedString as Organization
-		ret.Organization = r.ProcessedString
-	}
-	return ret, err
 }
 
 func Record(w http.ResponseWriter, r *http.Request) {
@@ -210,13 +197,6 @@ func DrawPNG(w http.ResponseWriter, r *http.Request) {
 
 	var result Result
 	if err := json.Unmarshal([]byte(record.ISPInfo), &result); err != nil {
-		log.Errorf("Error parsing ISP info: %s", err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	ispInfo, err := result.GetISPInfo()
-	if err != nil {
 		log.Errorf("Error parsing ISP info: %s", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -342,9 +322,9 @@ func DrawPNG(w http.ResponseWriter, r *http.Request) {
 	drawer.Src = colorISP
 	drawer.Dot = freetype.Pt(6, canvasHeight-ctx.PointToFixed(14).Round()-15)
 	removeRegexp := regexp.MustCompile(`AS\d+\s`)
-	org := removeRegexp.ReplaceAllString(ispInfo.Organization, "")
-	if ispInfo.Country != "" {
-		org += ", " + ispInfo.Country
+	org := removeRegexp.ReplaceAllString(result.RawISPInfo.Organization, "")
+	if result.RawISPInfo.Country != "" {
+		org += ", " + result.RawISPInfo.Country
 	}
 	drawer.DrawString(org)
 

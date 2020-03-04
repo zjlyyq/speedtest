@@ -49,18 +49,18 @@ func getIPInfoURL(address string) string {
 	return ipInfoURL
 }
 
-func getIPInfo(addr string) (string, results.IPInfoResponse) {
+func getIPInfo(addr string) results.IPInfoResponse {
 	var ret results.IPInfoResponse
 	resp, err := http.DefaultClient.Get(getIPInfoURL(addr))
 	if err != nil {
 		log.Errorf("Error getting response from ipinfo.io: %s", err)
-		return "", ret
+		return ret
 	}
 
 	raw, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Errorf("Error reading response from ipinfo.io: %s", err)
-		return "", ret
+		return ret
 	}
 	defer resp.Body.Close()
 
@@ -68,7 +68,7 @@ func getIPInfo(addr string) (string, results.IPInfoResponse) {
 		log.Errorf("Error parsing response from ipinfo.io: %s", err)
 	}
 
-	return string(raw), ret
+	return ret
 }
 
 func getServerLocation() (float64, float64) {
