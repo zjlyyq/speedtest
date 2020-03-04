@@ -22,6 +22,7 @@ Works with mobile versions too.
 * Telemetry (optional)
 * Results sharing (optional)
 * Multiple Points of Test (optional)
+* Compatible with PHP frontend predefined endpoints (with `.php` suffixes)
 
 ![Screenshot](https://speedtest.fdossena.com/mpot_v6.gif)
 
@@ -97,7 +98,6 @@ You need Go 1.13+ to compile the binary.
 - Since there is no CGo-free SQLite implementation available, I've opted to use [BoltDB](https://github.com/etcd-io/bbolt)
   instead, as an embedded database alternative to SQLite
 - Test IDs are generated ULID, there is no option to change them to plain ID
-- API endpoints have the same names, except the `.php` extension (e.g `empty`, `garbage`, `getIP`)
 - You can use the same HTML template from the PHP implementation
 - There might be a slight delay on program start if your Internet connection is slow. That's because the program will
 attempt to fetch your current network's ISP info for distance calculation between your network and the speed test client's.
