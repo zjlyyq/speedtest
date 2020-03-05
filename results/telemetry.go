@@ -321,12 +321,16 @@ func DrawPNG(w http.ResponseWriter, r *http.Request) {
 	drawer.Face = orgFace
 	drawer.Src = colorISP
 	drawer.Dot = freetype.Pt(6, canvasHeight-ctx.PointToFixed(14).Round()-15)
-	removeRegexp := regexp.MustCompile(`AS\d+\s`)
-	org := removeRegexp.ReplaceAllString(result.RawISPInfo.Organization, "")
-	if result.RawISPInfo.Country != "" {
-		org += ", " + result.RawISPInfo.Country
+	if result.RawISPInfo.Organization != "" {
+		removeRegexp := regexp.MustCompile(`AS\d+\s`)
+		org := removeRegexp.ReplaceAllString(result.RawISPInfo.Organization, "")
+		if result.RawISPInfo.Country != "" {
+			org += ", " + result.RawISPInfo.Country
+		}
+		drawer.DrawString(org)
+	} else {
+		drawer.DrawString(result.ProcessedString)
 	}
-	drawer.DrawString(org)
 
 	w.Header().Set("Content-Disposition", "inline; filename="+uuid+".png")
 	w.Header().Set("Content-Type", "image/png")
