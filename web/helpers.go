@@ -143,10 +143,10 @@ func calculateDistance(clientLocation string, unit string) string {
 
 	unitString := " mi"
 	switch unit {
-	case "K":
+	case "km":
 		dist = dist * 1.609344
 		unitString = " km"
-	case "N":
+	case "NM":
 		dist = dist * 0.8684
 		unitString = " NM"
 	}

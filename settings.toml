@@ -6,8 +6,6 @@ listen_port=8989
 download_chunks=4
 # ipinfo.io API key, if applicable
 ipinfo_api_key=""
-# distance unit used in frontend, available options: M (miles), K (kilometers), N (nautical miles)
-distance_unit="K"
 
 # password for logging into statistics page
 statistics_password="PASSWORD"

@@ -155,7 +155,7 @@ func getIP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	getISPInfo := r.FormValue("isp") == "true"
-	getDistance := r.FormValue("distance") == "true"
+	distanceUnit := r.FormValue("distance")
 
 	ret.ProcessedString = clientIP
 
@@ -174,8 +174,8 @@ func getIP(w http.ResponseWriter, r *http.Request) {
 			isp += ", " + ispInfo.Country
 		}
 
-		if ispInfo.Location != "" && getDistance {
-			isp += " (" + calculateDistance(ispInfo.Location, config.LoadedConfig().DistanceUnit) + ")"
+		if ispInfo.Location != "" {
+			isp += " (" + calculateDistance(ispInfo.Location, distanceUnit) + ")"
 		}
 
 		ret.ProcessedString += " - " + isp

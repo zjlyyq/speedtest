@@ -72,8 +72,6 @@ You need Go 1.13+ to compile the binary.
     download_chunks=4
     # ipinfo.io API key, if applicable
     ipinfo_api_key=""
-    # distance unit used in frontend, available options: M (miles), K (kilometers), N (nautical miles), default is "K"
-    distance_unit="K"
     
     # password for logging into statistics page, change this to enable stats page
     statistics_password="PASSWORD"

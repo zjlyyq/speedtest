@@ -10,7 +10,6 @@ type Config struct {
 	Port           string `mapstructure:"listen_port"`
 	DownloadChunks int    `mapstructure:"download_chunks"`
 	IPInfoAPIKey   string `mapstructure:"ipinfo_api_key"`
-	DistanceUnit   string `mapstructure:"distance_unit"`
 
 	StatsPassword string `mapstructure:"statistics_password"`
 	RedactIP      bool   `mapstructure:"redact_ip_addresses"`
