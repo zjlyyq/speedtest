@@ -141,18 +141,6 @@ __Advanced parameters:__ (Seriously, don't change these unless you know what you
     * `1514 / 1440`: TCP+IPv6+ETH, ignoring HTTP overhead
     * `1`: ignore overheads. This measures the speed at which you actually download and upload files rather than the raw connection speed
 
-### Multiple Points of Test
-If you want to use more than one test server, this is the time to add all your test points and select the best one. Skip this part if you don't want to use this feature.
-
-The best way to do this is to declare an array with all your servers, and give it to the speedtest:
-```js
-var SPEEDTEST_SERVERS=[
-	server1,
-	server2,
-	...
-];
-s.addTestPoints(SPEEDTEST_SERVERS);
-
 ## Multiple Points of Test
 For multiple servers, you need to set up 1+ LibreSpeed backends, and 1 LibreSpeed frontend.
 
@@ -173,7 +161,7 @@ docker run -e MODE=backend -p 80:80 -it adolfintel/speedtest
 ### Frontend mode
 In frontend mode, LibreSpeed serves clients the Web UI and a list of servers. To do this:
 * Set the `MODE` environment variable to `frontend`
-* Create a servers.json file with your test points. The syntax is the following:
+* Create a `servers.json` file with your test points. The syntax is the following:
     ```
     [
         {
@@ -196,6 +184,11 @@ In frontend mode, LibreSpeed serves clients the Web UI and a list of servers. To
     ]
     ```
     Note: if a server only supports HTTP or HTTPS, specify the protocol in the server field. If it supports both, just use `//`.
+    If you want the test to load this list from an URL instead of a file, just put the URL that you want to be loaded in the file in quotes, like this:
+    ```
+    "//mydomain.com/ServerList.json"
+    ```
+    It doesn't need to be a complete URL, if it's the same domain you can just specify the file name. Note that the same origin policy still applies.
 * Mount this file to `/servers.json` in the container
     
 The test can be accessed on port 80.

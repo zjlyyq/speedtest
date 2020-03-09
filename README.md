@@ -6,6 +6,9 @@ This is the Docker version of LibreSpeed.
 
 See the included `doc.md` or the wiki for instructions on how to use it.
 
+## Go backend
+A Go implementation is available in the `go` branch, maintained by [Maddie Zhan](https://github.com/maddie).
+
 ## Donate
 [![Donate with Liberapay](https://liberapay.com/assets/widgets/donate.svg)](https://liberapay.com/fdossena/donate)  
 [Donate with PayPal](https://www.paypal.me/sineisochronic)  
