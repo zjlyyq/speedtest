@@ -64,7 +64,7 @@ You need Go 1.13+ to compile the binary.
 4. Change `settings.toml` according to your environment:
 
     ```toml
-    # bind address
+    # bind address, use empty string to bind to all interfaces
     bind_address="127.0.0.1"
     # backend listen port, default is 8989
     listen_port=8989

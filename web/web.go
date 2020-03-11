@@ -44,7 +44,7 @@ func ListenAndServe(conf *config.Config) error {
 	r.Use(middleware.NoCache)
 	r.Use(middleware.Logger)
 
-	log.Infof("Starting backend server on port %s", conf.Port)
+	log.Infof("Starting backend server on %s", net.JoinHostPort(conf.BindAddress, conf.Port))
 	r.Get("/*", pages)
 	r.HandleFunc("/empty", empty)
 	r.Get("/garbage", garbage)
