@@ -117,12 +117,12 @@ func getIP(w http.ResponseWriter, r *http.Request) {
 	var ret results.Result
 
 	clientIP := r.RemoteAddr
-	if strings.Contains(clientIP, ":") {
-		ip, _, _ := net.SplitHostPort(r.RemoteAddr)
+	clientIP = strings.ReplaceAll(clientIP, "::ffff:", "")
+
+	ip, _, err := net.SplitHostPort(r.RemoteAddr)
+	if err == nil {
 		clientIP = ip
 	}
-
-	strings.ReplaceAll(clientIP, "::ffff:", "")
 
 	isSpecialIP := true
 	switch {
