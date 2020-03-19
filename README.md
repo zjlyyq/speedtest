@@ -68,8 +68,6 @@ You need Go 1.13+ to compile the binary.
     bind_address="127.0.0.1"
     # backend listen port, default is 8989
     listen_port=8989
-    # download test chunks, default is 4
-    download_chunks=4
     # ipinfo.io API key, if applicable
     ipinfo_api_key=""
     

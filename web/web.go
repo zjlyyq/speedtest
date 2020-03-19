@@ -91,17 +91,22 @@ func garbage(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Disposition", "attachment; filename=random.dat")
 	w.Header().Set("Content-Transfer-Encoding", "binary")
 
-	conf := config.LoadedConfig()
-	ckSize := r.FormValue("ckSize")
+	// chunk size set to 4 by default
+	chunks := 4
 
-	chunks := conf.DownloadChunks
+	ckSize := r.FormValue("ckSize")
 	if ckSize != "" {
 		i, err := strconv.ParseInt(ckSize, 10, 64)
-		if err == nil && i > 0 && i < 1024 {
-			chunks = int(i)
-		} else {
+		if err != nil {
 			log.Errorf("Invalid chunk size: %s", ckSize)
 			log.Warn("Will use default value %d", chunks)
+		} else {
+			// limit max chunk size to 1024
+			if i > 1024 {
+				chunks = 1024
+			} else {
+				chunks = int(i)
+			}
 		}
 	}
 
