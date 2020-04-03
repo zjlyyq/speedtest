@@ -35,13 +35,25 @@ Works with mobile versions too.
 
 You need Go 1.13+ to compile the binary.
 
-1. Use this to install the binary into your `GOPATH`:
+1. Clone this repository:
 
     ```
-    $ go get github.com/librespeed/speedtest@go
+    $ git clone github.com/librespeed/speedtest
+    # Switch to the Go branch
+    $ git checkout -b go
     ```
 
-2. If you have telemetry enabled,
+2. Build
+    ```
+    # Change current working directory to the repository
+    $ cd speedtest
+    # Compile
+    $ go build -ldflags "-w -s" -trimpath -o speedtest main.go
+    ```
+  
+3. Copy the `assets` directory, `settings.toml` file along with the compiled `speedtest` binary into a single directory
+
+4. If you have telemetry enabled,
     - For PostgreSQL/MySQL, create database and import the corresponding `.sql` file under `database/{postgresql,mysql}`
 
         ```
@@ -55,13 +67,13 @@ You need Go 1.13+ to compile the binary.
         database_file="speedtest.db"
         ```
 
-3. Put `assets` folder under the same directory as your compiled binary.
+5. Put `assets` folder under the same directory as your compiled binary.
     - Make sure the font files and JavaScripts are in the `assets` directory
     - You can have multiple HTML pages under `assets` directory. They can be access directly under the server root
     (e.g. `/example-singleServer-full.html`)
     - It's possible to have a default page mapped to `/`, simply put a file named `index.html` under `assets`
 
-4. Change `settings.toml` according to your environment:
+6. Change `settings.toml` according to your environment:
 
     ```toml
     # bind address, use empty string to bind to all interfaces
