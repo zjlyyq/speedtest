@@ -1,11 +1,11 @@
 package database
 
 import (
-	"backend/config"
-	"backend/database/bolt"
-	"backend/database/mysql"
-	"backend/database/postgresql"
-	"backend/database/schema"
+	"github.com/librespeed/speedtest/config"
+	"github.com/librespeed/speedtest/database/bolt"
+	"github.com/librespeed/speedtest/database/mysql"
+	"github.com/librespeed/speedtest/database/postgresql"
+	"github.com/librespeed/speedtest/database/schema"
 )
 
 var (

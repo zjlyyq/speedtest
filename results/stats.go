@@ -6,9 +6,9 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"backend/config"
-	"backend/database"
-	"backend/database/schema"
+	"github.com/librespeed/speedtest/config"
+	"github.com/librespeed/speedtest/database"
+	"github.com/librespeed/speedtest/database/schema"
 )
 
 type StatsData struct {

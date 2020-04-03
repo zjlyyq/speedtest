@@ -1,4 +1,4 @@
-module backend
+module github.com/librespeed/speedtest
 
 go 1.13
 

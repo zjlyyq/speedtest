@@ -7,7 +7,7 @@ import (
 
 	"go.etcd.io/bbolt"
 
-	"backend/database/schema"
+	"github.com/librespeed/speedtest/database/schema"
 
 	_ "github.com/go-sql-driver/mysql"
 	log "github.com/sirupsen/logrus"
