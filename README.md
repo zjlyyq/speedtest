@@ -10,7 +10,7 @@ This is a very lightweight speed test implemented in JavaScript, using XMLHttpRe
 [Take a speed test](https://speedtest.fdossena.com) (PHP implementation)
 
 ## Compatibility
-All modern browsers are supported: IE11, latest Edge, latest Chrome, latest Firefox, latest Safari.  
+All modern browsers are supported: IE11, latest Edge, latest Chrome, latest Firefox, latest Safari.
 Works with mobile versions too.
 
 ## Features
@@ -50,7 +50,7 @@ You need Go 1.13+ to compile the binary.
     # Compile
     $ go build -ldflags "-w -s" -trimpath -o speedtest main.go
     ```
-  
+
 3. Copy the `assets` directory, `settings.toml` file along with the compiled `speedtest` binary into a single directory
 
 4. If you have telemetry enabled,
@@ -60,9 +60,9 @@ You need Go 1.13+ to compile the binary.
         # assume you have already created a database named `speedtest` under current user
         $ psql speedtest < database/postgresql/telemetry_postgresql.sql
         ```
-     
+
     - For embedded BoltDB, make sure to define the `database_file` path in `settings.toml`:
-    
+
         ```
         database_file="speedtest.db"
         ```
@@ -80,21 +80,24 @@ You need Go 1.13+ to compile the binary.
     bind_address="127.0.0.1"
     # backend listen port, default is 8989
     listen_port=8989
+    # Server location
+    server_lat=0
+    server_lng=0
     # ipinfo.io API key, if applicable
     ipinfo_api_key=""
-    
+
     # password for logging into statistics page, change this to enable stats page
     statistics_password="PASSWORD"
     # redact IP addresses
     redact_ip_addresses=false
-    
+
     # database type for statistics data, currently supports: bolt, mysql, postgresql
     database_type="postgresql"
     database_hostname="localhost"
     database_name="speedtest"
     database_username="postgres"
     database_password=""
-   
+
     # if you use `bolt` as database, set database_file to database file location
     database_file="speedtest.db"
     ```
@@ -105,12 +108,13 @@ You need Go 1.13+ to compile the binary.
   instead, as an embedded database alternative to SQLite
 - Test IDs are generated ULID, there is no option to change them to plain ID
 - You can use the same HTML template from the PHP implementation
+- Server location can be defined in settings
 - There might be a slight delay on program start if your Internet connection is slow. That's because the program will
 attempt to fetch your current network's ISP info for distance calculation between your network and the speed test client's.
 This action will only be taken once, and cached for later use.
 
 ## License
-Copyright (C) 2016-2020 Federico Dossena  
+Copyright (C) 2016-2020 Federico Dossena
 Copyright (C) 2020 Maddie Zhan
 
 This program is free software: you can redistribute it and/or modify
