@@ -72,6 +72,13 @@ func getIPInfo(addr string) results.IPInfoResponse {
 }
 
 func getServerLocation() (float64, float64) {
+	conf := config.LoadedConfig()
+
+	if conf.ServerLat > 0 && conf.ServerLng > 0 {
+		log.Infof("Configured server coordinates: %.6f, %.6f", conf.ServerLat, conf.ServerLng)
+		return conf.ServerLat, conf.ServerLng
+	}
+
 	var ret results.IPInfoResponse
 	resp, err := http.DefaultClient.Get(getIPInfoURL(""))
 	if err != nil {
