@@ -29,7 +29,7 @@ const (
 	watermark = "LibreSpeed"
 
 	labelMS       = " ms"
-	labelMbps     = "Mbps"
+	labelMbps     = "Mbit/s"
 	labelPing     = "Ping"
 	labelJitter   = "Jitter"
 	labelDownload = "Download"

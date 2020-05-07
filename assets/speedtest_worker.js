@@ -7,8 +7,8 @@
 
 // data reported to main thread
 var testState = -1; // -1=not started, 0=starting, 1=download test, 2=ping+jitter test, 3=upload test, 4=finished, 5=abort
-var dlStatus = ""; // download speed in megabit/s with 2 decimal digits
-var ulStatus = ""; // upload speed in megabit/s with 2 decimal digits
+var dlStatus = ""; // download speed in Mbit/s with 2 decimal digits
+var ulStatus = ""; // upload speed in Mbit/s with 2 decimal digits
 var pingStatus = ""; // ping in milliseconds with 2 decimal digits
 var jitterStatus = ""; // jitter in milliseconds with 2 decimal digits
 var clientIp = ""; // client's IP address as reported by getIP
@@ -61,7 +61,7 @@ var settings = {
 	enable_quirks: true, // enable quirks for specific browsers. currently it overrides settings to optimize for specific browsers, unless they are already being overridden with the start command
 	ping_allowPerformanceApi: true, // if enabled, the ping test will attempt to calculate the ping more precisely using the Performance API. Currently works perfectly in Chrome, badly in Edge, and not at all in Firefox. If Performance API is not supported or the result is obviously wrong, a fallback is provided.
 	overheadCompensationFactor: 1.06, //can be changed to compensatie for transport overhead. (see doc.md for some other values)
-	useMebibits: false, //if set to true, speed will be reported in mebibits/s instead of megabits/s
+	useMebibits: false, //if set to true, speed will be reported in Mibit/s instead of Mbit/s
 	telemetry_level: 0, // 0=disabled, 1=basic (results only), 2=full (results and timing) 3=debug (results+log)
 	url_telemetry: "results/telemetry", // path to the script that adds telemetry data to the database
 	telemetry_extra: "" //extra data that can be passed to the telemetry through the settings
