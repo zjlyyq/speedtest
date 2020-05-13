@@ -90,7 +90,7 @@ manually, you can install newer version of Go into your GOPATH:
     bind_address="127.0.0.1"
     # backend listen port, default is 8989
     listen_port=8989
-    # Server location
+    # Server location, use zeroes to fetch from API automatically
     server_lat=0
     server_lng=0
     # ipinfo.io API key, if applicable
