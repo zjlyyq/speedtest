@@ -33,14 +33,24 @@ Works with mobile versions too.
 
 ## Installation
 
-You need Go 1.13+ to compile the binary.
+You need Go 1.13+ to compile the binary. If you have an older version of Go and don't want to install the tarball
+manually, you can install newer version of Go into your GOPATH:
+
+0. Install Go 1.14
+
+   ```
+   $ go get golang.org/dl/go1.14.2
+   # Assuming your GOPATH is default (~/go), Go 1.14.2 will be installed in ~/go/bin
+   $ ~/go/bin/go1.14.2 version
+   go version go1.14.2 linux/amd64
+   ```
 
 1. Clone this repository:
 
     ```
     $ git clone github.com/librespeed/speedtest
     # Switch to the Go branch
-    $ git checkout -b go
+    $ git checkout go
     ```
 
 2. Build
