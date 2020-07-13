@@ -24,7 +24,6 @@ if [ "$MODE" == "backend" ]; then
   fi
 fi
 
-
 # Set up index.php for frontend-only or standalone modes
 if [ "$MODE" == "frontend" ]; then
   cp /speedtest/frontend.php /var/www/html/index.php
@@ -53,6 +52,12 @@ if [[ "$TELEMETRY" == "true" && ( "$MODE" == "frontend" || "$MODE" == "standalon
 fi
 
 chown -R www-data /var/www/html/*
+
+# Allow selection of Apache port for network_mode: host
+if [ "$WEBPORT" != "80" ]; then
+  sed -i "s/^Listen 80\$/Listen $WEBPORT/g" /etc/apache2/ports.conf
+  sed -i "s/*:80>/*:$WEBPORT>/g" /etc/apache2/sites-available/000-default.conf 
+fi
 
 echo "Done, Starting APACHE"
 
