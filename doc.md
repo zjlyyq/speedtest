@@ -2,7 +2,6 @@
 
 ## Downloading from Docker hub
 To download LibreSpeed from the docker hub, use this command:
-
 ```
 docker pull adolfintel/speedtest
 ```
@@ -34,10 +33,156 @@ This command starts LibreSpeed in standalone mode, with the default settings, on
 docker run -e MODE=standalone -p 80:80 -it adolfintel/speedtest
 ```
 
+We must distinguish 2 types of servers:
+* __Frontend server__: hosts the UI, the JS files, and optionally telemetry and results sharing stuff. You only need 1 of these, and this is the server that your clients will first connect to.
+* __Test backends__: the servers used to actually perform the test. There can be 1+ of these, and they only host the backend files.
+
+#### Frontend server
+This is the server that your users will first connect to. It hosts the UI, the JS files, and optionally telemetry and results sharing stuff.
+
+Requirements:
+* Apache 2 (nginx and IIS also supported). A fast connection is not mandatory, but is still recommended
+* PHP 5.4 or newer
+* If you want to store test results (telemetry), one of the following:
+    - MySQL/MariaDB and the mysqli PHP module
+    - PostgreSQL and its PHP PDO module
+    - SQLite 3 and its PHP PDO module
+* If you want to enable results sharing:
+    - FreeType 2 and its PHP module (this is usually installed automatically by most distros)
+
+To install the speedtest frontend, copy the following files to your web server:
+* `speedtest.js`
+* `speedtest_worker.js`
+* Optionally, the `results` folder
+* One of the `multipleServers` examples (the best starting points are `example-multipleServers-pretty.html` if you don't want to use telemetry and results sharing, `example-multipleServers-full.html` if you want to use them). Rename the example you choose to `index.html`
+
+__Important:__ The speedtest needs write permissions in the installation folder!
+
+##### Server list
+Edit `index.html`, you will see a list of servers:
+```js
+var SPEEDTEST_SERVERS=[
+	{
+		"name":"Speedtest Demo Server 1", //user friendly name for the server
+		"server":"//mpotdemo.fdossena.com/", //URL to the server. // at the beginning will be replaced with http:// or https:// automatically
+		"dlURL":"garbage.php",  //path to download test on this server (garbage.php or replacement)
+		"ulURL":"empty.php",  //path to upload test on this server (empty.php or replacement)
+		"pingURL":"empty.php",  //path to ping/jitter test on this server (empty.php or replacement)
+		"getIpURL":"getIP.php"  //path to getIP on this server (getIP.php or replacement)
+	},
+	{
+		"name":"Speedtest Demo Server 2",
+		"server":"//mpotdemo2.fdossena.com/",
+		"dlURL":"garbage.php",
+		"ulURL":"empty.php",
+		"pingURL":"empty.php",
+		"getIpURL":"getIP.php"
+	}
+	//add other servers here, comma separated
+];
+```
+
+Replace the demo servers with your test points. Each server in the list is an object containing:
+* `"name"`: user friendly name for this test point
+* `"server"`: URL to the server. If your server only supports HTTP or HTTPS, put http:// or https:// at the beginning, respectively; if it supports both, put // at the beginning and it will be replaced automatically
+* `"dlURL"`: path to the download test on this server (garbage.php or replacement)
+* `"ulURL"`: path to the upload test on this server (empty.php or replacement)
+* `"pingURL"`: path to the ping test on this server (empty.php or replacement)
+* `"getIpURL"`: path to getIP on this server (getIP.php or replacement)
+
+None of these parameters can be omitted.
+
+__Important__: You can't mix HTTP with HTTPS; if the frontend uses HTTP, you won't be able to connect to HTTPS backends, and viceversa.
+
+__Important__: For HTTPS, all your servers must have valid certificates or the browser will refuse to connect
+
+__Important__: Don't use my demo servers, they're slow!
+
+If your list of servers changes often, you might not want to have it hardcoded in the HTML file. LibreSpeed can load the server list from a JSON file. To do this, edit `index.html` and replace the list of servers with this:
+```js
+var SPEEDTEST_SERVERS="your URL here";
+```
+
+The URL doesn't need to be complete, it can just point to a file in the current directory. The URL should point to a JSON file with the same format used above:
+```js
+[
+    {
+        "name":...
+    },
+    ...
+]
+```
+
+__Important:__ The same origin policy applies to which URLs you can and cannot load with this method. If possible, it's best to just point it to a file on the current server.
+
+##### Telemetry and results sharing
+Telemetry is stored on the frontend server. The setup procedure is the same as the single server version.
+
+#### Test backends
+These are the servers that will actually be used to perform the test.
+
+Requirements:
+* Apache 2 (nginx and IIS also supported). A fast internet connection is required (possibly gigabit), and the web server must accept large POST requests (up to 20MB)
+* PHP 5.4 or newer
+* OpenSSL and its PHP module (this is usually installed automatically by most distros)
+
+To install a backend, simply copy all the files in the `backend` folder to your backend server.
+
+__Important:__ The speedtest needs write permissions in the installation folder!
+
+#### ipinfo.io
+The speedtest uses [ipinfo.io](https://ipinfo.io) to detect ISP and distance from server. This is completely optional and can be disabled if you want (see Speedtest settings), but it is enabled by default, and if you expect more than ~500 tests per day, you will need to sign up to [ipinfo.io](https://ipinfo.io) and edit `getIP_ipInfo_apikey.php` to set your access token.
+
+IpInfo.io has kindly offered free access to their APIs for users of this project; if you're interested, contact me at [info@fdossena.com](mailto:info@fdossena.com) and provide a description of what you intend to do with the project, and you'll get the API key.
+
+## Making a custom front-end
+This section explains how to use speedtest.js in your webpages.
+
+The best way to learn is by looking at the provided examples.
+
+__Single server:__
+* `example-singleServer-basic.html`: The most basic configuration possible. Runs the test with the default settings when the page is loaded and displays the results with no fancy graphics.
+* `example-singleServer-pretty.html`: A more sophisticated example with a nicer layout and a start/stop button. __This is the best starting point for most users__
+* `example-singleServer-progressBar.html`: Same as `example-singleServer-pretty.html` but adds a progress indicator
+* `example-singleServer-customSettings.html`: Same as `example-singleServer-pretty.html` but configures the test so that it only performs download and upload tests, and with a fixed length instead of automatic
+* `example-singleServer-gauges.html`: The most sophisticated example, with the same functionality as `example-singleServer-pretty.html` but adds gauges. This is also a good starting point, but the gauges may slow down underpowered devices
+* `example-singleServer-chart.html`: Shows how to use the test with the Chart.js library
+* `example-singleServer-full.html`: The most complete example. Based on `example-singleServer-gauges.html`, also enables telemetry and results sharing
+
+__Multiple servers:__
+* `example-multipleServers-pretty.html`: Same as `example-singleServer-pretty.html` but with multiple test points. Server selection is fully automatic
+* `example-multipleServers-full.html`: Same as `example-singleServer-full.html` but with multiple test points. Server selection is automatic but the server can be changed afterwards by the user
+
+### Initialization
+To use the speedtest in your page, first you need to load it:
+```xml
+<script type="text/javascript" src="speedtest.js"></script>
+```
+
+After loading, you can initialize the test:
+```js
+var s=new Speedtest();
+```
+
+### Event handlers
+Now, you can set up event handlers to update your UI:
+```js
+s.onupdate=function(data){
+    //update your UI here
+}
+s.onend=function(aborted){
+    //end of the test
+    if(aborted){
+        //something to do if the test was aborted instead of ending normally
+    }
+}
+>>>>>>> master
+```
+
 This command starts LibreSpeed in standalone mode, with telemetry, ID obfuscation and a stats password, on port 80:
 
 ```
-docker run -e MODE=standalone -e TELEMETRY=true -e ENABLE_ID_OBFUSCATION=true -e PASSWORD="botnet!123" -p 80:80 -it adolfintel/speedtest
+docker run -e MODE=standalone -e TELEMETRY=true -e ENABLE_ID_OBFUSCATION=true -e PASSWORD="botnet123" -p 80:80 -it adolfintel/speedtest
 ```
 And now the test results will be stored and we will get our test ID at the end of the test (along with the other data)
 
@@ -206,6 +351,7 @@ Here's a list of additional environment variables available in this mode:
 ###### Example
 This command starts LibreSpeed in frontend mode, with a given `servers.json` file, and with telemetry, ID obfuscation, and a stats password:
 ```
-docker run -e MODE=frontend -e TELEMETRY=true -e ENABLE_ID_OBFUSCATION=true -e PASSWORD="botnet!123" -v ./my_servers.json:/servers.json -p 80:80 -it adolfintel/speedtest
+docker run -e MODE=frontend -e TELEMETRY=true -e ENABLE_ID_OBFUSCATION=true -e PASSWORD="botnet123" -v ./my_servers.json:/servers.json -p 80:80 -it adolfintel/speedtest
 ```
 
+Note that this will add `mpot`:`true` to the parameters sent to the speedtest worker.

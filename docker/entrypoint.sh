@@ -52,6 +52,7 @@ if [[ "$TELEMETRY" == "true" && ( "$MODE" == "frontend" || "$MODE" == "standalon
   chown www-data /database/
 fi
 
+chown -R www-data /var/www/html/*
 
 echo "Done, Starting APACHE"
 
