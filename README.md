@@ -14,7 +14,7 @@ A Go implementation is available in the [`speedtest-go`](https://github.com/libr
 [Donate with PayPal](https://www.paypal.me/sineisochronic)  
 
 ## License
-Copyright (C) 2016-2020 Federico Dossena
+Copyright (C) 2016-2021 Federico Dossena
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by
