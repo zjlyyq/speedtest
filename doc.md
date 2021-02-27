@@ -24,7 +24,7 @@ Here's a list of additional environment variables available in this mode:
 * __`IPINFO_APIKEY`__: API key for ipinfo.io. Optional, but required if you expect to serve a large number of tests
 * __`DISABLE_IPINFO`__: If set to true, ISP info and distance will not be fetched from ipinfo.io. Default: value: `false`
 * __`DISTANCE`__: When `DISABLE_IPINFO` is set to false, this specifies how the distance from the server is measured. Can be either `km` for kilometers, `mi` for miles, or an empty string to disable distance measurement. Default value: `km`
-* __`WEBPORT`__: Allows choosing a custom port for the included web server. Default value: `80`
+* __`WEBPORT`__: Allows choosing a custom port for the included web server. Default value: `80`. Note that you will have to expose it through docker with the -p argument
 
 If telemetry is enabled, a stats page will be available at `http://your.server/results/stats.php`, but a password must be specified.
 
@@ -35,10 +35,10 @@ This command starts LibreSpeed in standalone mode, with the default settings, on
 docker run -e MODE=standalone -p 80:80 -it adolfintel/speedtest
 ```
 
-This command starts LibreSpeed in standalone mode, with telemetry, ID obfuscation and a stats password, on port 80:
+This command starts LibreSpeed in standalone mode, with telemetry, ID obfuscation and a stats password, on port 86:
 
 ```
-docker run -e MODE=standalone -e TELEMETRY=true -e ENABLE_ID_OBFUSCATION=true -e PASSWORD="botnet!123" -p 80:80 -it adolfintel/speedtest
+docker run -e MODE=standalone -e TELEMETRY=true -e ENABLE_ID_OBFUSCATION=true -e PASSWORD="yourPasswordHere" -e WEBPORT=86 -p 86:86 -it adolfintel/speedtest
 ```
 
 ## Multiple Points of Test
@@ -84,7 +84,7 @@ In frontend mode, LibreSpeed serves clients the Web UI and a list of servers. To
     ]
     ```
     Note: if a server only supports HTTP or HTTPS, specify the protocol in the server field. If it supports both, just use `//`.
-* Mount this file to `/servers.json` in the container
+* Mount this file to `/servers.json` in the container (example at the end of this file)
     
 The test can be accessed on port 80.
 
@@ -102,5 +102,5 @@ Here's a list of additional environment variables available in this mode:
 ###### Example
 This command starts LibreSpeed in frontend mode, with a given `servers.json` file, and with telemetry, ID obfuscation, and a stats password:
 ```
-docker run -e MODE=frontend -e TELEMETRY=true -e ENABLE_ID_OBFUSCATION=true -e PASSWORD="botnet!123" -v ./my_servers.json:/servers.json -p 80:80 -it adolfintel/speedtest
+docker run -e MODE=frontend -e TELEMETRY=true -e ENABLE_ID_OBFUSCATION=true -e PASSWORD="yourPasswordHere" -v $(pwd)/servers.json:/servers.json -p 80:80 -it adolfintel/speedtest
 ```
