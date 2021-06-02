@@ -45,9 +45,9 @@ var settings = {
 	time_ulGraceTime: 3, //time to wait in seconds before actually measuring ul speed (wait for buffers to fill)
 	time_dlGraceTime: 1.5, //time to wait in seconds before actually measuring dl speed (wait for TCP window to increase)
 	count_ping: 10, // number of pings to perform in ping test
-	url_dl: "backend/garbage.php", // path to a large file or garbage.php, used for download test. must be relative to this js file
-	url_ul: "backend/empty.php", // path to an empty file, used for upload test. must be relative to this js file
-	url_ping: "backend/empty.php", // path to an empty file, used for ping test. must be relative to this js file
+	url_dl: "http://121.199.20.52:8080/download?nocache=6999636c-cd7f-4b67-88c6-49316279c1df&size=25000000&guid=b68007c6-2509-43bb-8e77-9560aaa0b452" || "backend/garbage.php", // path to a large file or garbage.php, used for download test. must be relative to this js file
+	url_ul: "http://121.199.20.52:8080/upload?nocache=e83e3312-1d82-47da-9c19-8c9c7bdfe446&guid=90f688d2-7c72-4aaf-af4c-783765c18b75" || "backend/empty.php", // path to an empty file, used for upload test. must be relative to this js file
+	url_ping: "http://121.199.20.52:8080/hello?nocache=54f1f32e-f8e7-47be-9ead-80b6be46ef75&guid=ffe25d06-e421-4cf5-82b1-74fba3c87108" || "backend/empty.php", // path to an empty file, used for ping test. must be relative to this js file
 	url_getIp: "backend/getIP.php", // path to getIP.php relative to this js file, or a similar thing that outputs the client's ip
 	getIp_ispInfo: true, //if set to true, the server will include ISP info with the IP address
 	getIp_ispInfo_distance: "km", //km or mi=estimate distance from server in km/mi; set to false to disable distance estimation. getIp_ispInfo must be enabled in order for this to work
